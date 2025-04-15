@@ -1,0 +1,341 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище restaurant_usbechkaModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="menu">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="title" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="description" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="orders">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="user_id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="table_id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="time_end" Type="time" Precision="7" Nullable="false" />
+          <Property Name="menu_ids" Type="varchar(max)" Nullable="false" />
+          <Property Name="full_price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="payment_date" Type="datetime" Nullable="false" />
+          <Property Name="payment_method" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="reserved_tables">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="table_id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="user_id" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tables">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="number_table" Type="int" Nullable="false" />
+          <Property Name="is_reserved" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="users">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="phone" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="password" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="join_date" Type="datetime" Nullable="false" />
+          <Property Name="role" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__orders__table_id__403A8C7D">
+          <End Role="tables" Type="Self.tables" Multiplicity="1" />
+          <End Role="orders" Type="Self.orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tables">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="orders">
+              <PropertyRef Name="table_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__orders__user_id__3F466844">
+          <End Role="users" Type="Self.users" Multiplicity="1" />
+          <End Role="orders" Type="Self.orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="orders">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__reserved___table__47DBAE45">
+          <End Role="tables" Type="Self.tables" Multiplicity="1" />
+          <End Role="reserved_tables" Type="Self.reserved_tables" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tables">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="reserved_tables">
+              <PropertyRef Name="table_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__reserved___user___48CFD27E">
+          <End Role="users" Type="Self.users" Multiplicity="1" />
+          <End Role="reserved_tables" Type="Self.reserved_tables" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="reserved_tables">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище restaurant_usbechkaModelContainer">
+          <EntitySet Name="menu" EntityType="Self.menu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="orders" EntityType="Self.orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="reserved_tables" EntityType="Self.reserved_tables" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tables" EntityType="Self.tables" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="users" EntityType="Self.users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__orders__table_id__403A8C7D" Association="Self.FK__orders__table_id__403A8C7D">
+            <End Role="tables" EntitySet="tables" />
+            <End Role="orders" EntitySet="orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK__orders__user_id__3F466844" Association="Self.FK__orders__user_id__3F466844">
+            <End Role="users" EntitySet="users" />
+            <End Role="orders" EntitySet="orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK__reserved___table__47DBAE45" Association="Self.FK__reserved___table__47DBAE45">
+            <End Role="tables" EntitySet="tables" />
+            <End Role="reserved_tables" EntitySet="reserved_tables" />
+          </AssociationSet>
+          <AssociationSet Name="FK__reserved___user___48CFD27E" Association="Self.FK__reserved___user___48CFD27E">
+            <End Role="users" EntitySet="users" />
+            <End Role="reserved_tables" EntitySet="reserved_tables" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="restaurant_usbechkaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="menu">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="title" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="description" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="price" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="orders">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="user_id" Type="Guid" Nullable="false" />
+          <Property Name="table_id" Type="Guid" Nullable="false" />
+          <Property Name="time_end" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="menu_ids" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="full_price" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="payment_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="payment_method" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="tables" Relationship="Self.FK__orders__table_id__403A8C7D" FromRole="orders" ToRole="tables" />
+          <NavigationProperty Name="users" Relationship="Self.FK__orders__user_id__3F466844" FromRole="orders" ToRole="users" />
+        </EntityType>
+        <EntityType Name="reserved_tables">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="table_id" Type="Guid" Nullable="false" />
+          <Property Name="user_id" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="tables" Relationship="Self.FK__reserved___table__47DBAE45" FromRole="reserved_tables" ToRole="tables" />
+          <NavigationProperty Name="users" Relationship="Self.FK__reserved___user___48CFD27E" FromRole="reserved_tables" ToRole="users" />
+        </EntityType>
+        <EntityType Name="tables">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="number_table" Type="Int32" Nullable="false" />
+          <Property Name="is_reserved" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="orders" Relationship="Self.FK__orders__table_id__403A8C7D" FromRole="tables" ToRole="orders" />
+          <NavigationProperty Name="reserved_tables" Relationship="Self.FK__reserved___table__47DBAE45" FromRole="tables" ToRole="reserved_tables" />
+        </EntityType>
+        <EntityType Name="users">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="phone" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="join_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="role" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="orders" Relationship="Self.FK__orders__user_id__3F466844" FromRole="users" ToRole="orders" />
+          <NavigationProperty Name="reserved_tables" Relationship="Self.FK__reserved___user___48CFD27E" FromRole="users" ToRole="reserved_tables" />
+        </EntityType>
+        <Association Name="FK__orders__table_id__403A8C7D">
+          <End Role="tables" Type="Self.tables" Multiplicity="1" />
+          <End Role="orders" Type="Self.orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tables">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="orders">
+              <PropertyRef Name="table_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__orders__user_id__3F466844">
+          <End Role="users" Type="Self.users" Multiplicity="1" />
+          <End Role="orders" Type="Self.orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="orders">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__reserved___table__47DBAE45">
+          <End Role="tables" Type="Self.tables" Multiplicity="1" />
+          <End Role="reserved_tables" Type="Self.reserved_tables" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tables">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="reserved_tables">
+              <PropertyRef Name="table_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__reserved___user___48CFD27E">
+          <End Role="users" Type="Self.users" Multiplicity="1" />
+          <End Role="reserved_tables" Type="Self.reserved_tables" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="reserved_tables">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="restaurant_usbechkaEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="menu" EntityType="Self.menu" />
+          <EntitySet Name="orders" EntityType="Self.orders" />
+          <EntitySet Name="reserved_tables" EntityType="Self.reserved_tables" />
+          <EntitySet Name="tables" EntityType="Self.tables" />
+          <EntitySet Name="users" EntityType="Self.users" />
+          <AssociationSet Name="FK__orders__table_id__403A8C7D" Association="Self.FK__orders__table_id__403A8C7D">
+            <End Role="tables" EntitySet="tables" />
+            <End Role="orders" EntitySet="orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK__orders__user_id__3F466844" Association="Self.FK__orders__user_id__3F466844">
+            <End Role="users" EntitySet="users" />
+            <End Role="orders" EntitySet="orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK__reserved___table__47DBAE45" Association="Self.FK__reserved___table__47DBAE45">
+            <End Role="tables" EntitySet="tables" />
+            <End Role="reserved_tables" EntitySet="reserved_tables" />
+          </AssociationSet>
+          <AssociationSet Name="FK__reserved___user___48CFD27E" Association="Self.FK__reserved___user___48CFD27E">
+            <End Role="users" EntitySet="users" />
+            <End Role="reserved_tables" EntitySet="reserved_tables" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище restaurant_usbechkaModelContainer" CdmEntityContainer="restaurant_usbechkaEntities">
+          <EntitySetMapping Name="menu">
+            <EntityTypeMapping TypeName="restaurant_usbechkaModel.menu">
+              <MappingFragment StoreEntitySet="menu">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="price" ColumnName="price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="orders">
+            <EntityTypeMapping TypeName="restaurant_usbechkaModel.orders">
+              <MappingFragment StoreEntitySet="orders">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="table_id" ColumnName="table_id" />
+                <ScalarProperty Name="time_end" ColumnName="time_end" />
+                <ScalarProperty Name="menu_ids" ColumnName="menu_ids" />
+                <ScalarProperty Name="full_price" ColumnName="full_price" />
+                <ScalarProperty Name="payment_date" ColumnName="payment_date" />
+                <ScalarProperty Name="payment_method" ColumnName="payment_method" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="reserved_tables">
+            <EntityTypeMapping TypeName="restaurant_usbechkaModel.reserved_tables">
+              <MappingFragment StoreEntitySet="reserved_tables">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="table_id" ColumnName="table_id" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tables">
+            <EntityTypeMapping TypeName="restaurant_usbechkaModel.tables">
+              <MappingFragment StoreEntitySet="tables">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="number_table" ColumnName="number_table" />
+                <ScalarProperty Name="is_reserved" ColumnName="is_reserved" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="restaurant_usbechkaModel.users">
+              <MappingFragment StoreEntitySet="users">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="join_date" ColumnName="join_date" />
+                <ScalarProperty Name="role" ColumnName="role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
