@@ -14,7 +14,7 @@ namespace usbechka_app.pages
 
         private void ButtonConfirm(object sender, RoutedEventArgs e)
         {
-            if (title.Text.Trim() == null || description.Text.Trim() == null || price.Text.Trim() == null)
+            if (title.Text.Trim().Length <= 0 || description.Text.Trim().Length <= 0 || price.Text.Trim().Length <= 0)
             {
                 CustomMessageBox.Show("Проверьте правильность введенных данных.");
                 return;
@@ -29,7 +29,7 @@ namespace usbechka_app.pages
             menu delishes = AppData.Db.menu.SingleOrDefault(x => x.title == title.Text);
             if (null != delishes)
             {
-                CustomMessageBox.Show("Стол уже добавлен.");
+                CustomMessageBox.Show("Блюдо уже добавлено.");
                 return;
             }
 
@@ -45,13 +45,6 @@ namespace usbechka_app.pages
             AppData.Db.menu.Add(newDelishes);
             AppData.Db.SaveChanges();
 
-            new AdminWindow().Show();
-            Close();
-        }
-
-        private void ButtonBack(object sender, RoutedEventArgs e)
-        {
-            new AdminWindow().Show();
             Close();
         }
 

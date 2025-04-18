@@ -43,13 +43,6 @@ namespace usbechka_app.pages
             AppData.Db.tables.Add(newTable);
             AppData.Db.SaveChanges();
 
-            new AdminWindow().Show();
-            Close();
-        }
-
-        private void ButtonBack(object sender, RoutedEventArgs e)
-        {
-            new AdminWindow().Show();
             Close();
         }
 

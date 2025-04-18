@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace usbechka_app.pages
@@ -11,161 +12,46 @@ namespace usbechka_app.pages
         public ClientWindow(Guid user_id)
         {
             InitializeComponent();
-
             id = user_id;
-
-            tables.ItemsSource = AppData.Db.tables
-                .Where(x => x.is_reserved == false)
-                .ToList();
-
-            orders.ItemsSource = AppData.Db.orders
-                .Where(x => x.user_id == id)
-                .AsEnumerable()
-                .Select(o => new
-                {
-                    o.id,
-                    delishes = GetDishNames(o.menu_ids),
-                    time_end = DateTime.Today.Add(o.time_end).ToString("HH:mm"),
-                    o.full_price,
-                    o.payment_method,
-                    o.table_id
-                })
-                .ToList();
-
-            var reservedTableIds = AppData.Db.reserved_tables
-                .Where(x => x.user_id == id)
-                .Select(x => x.table_id)
-                .ToList();
-
-            your_tables.ItemsSource = AppData.Db.tables
-                .Where(t => reservedTableIds.Contains(t.id))
-                .ToList();
+            NavigateToTables(null, null);
+            UpdateNavButtons("Доступные столы");
         }
 
-        private static string GetDishNames(string menuIds)
+        private void UpdateNavButtons(string activePageTag)
         {
-            if (string.IsNullOrEmpty(menuIds))
-                return "Нет блюд";
+            TablesBtn.Style = activePageTag == "TablesPage" ?
+                (Style)FindResource("NavButtonActive") : (Style)FindResource("NavButtonWithIcon");
 
-            try
-            {
-                var items = menuIds.Split(' ')
-                    .Select(x => x.Split(':'))
-                    .Select(parts => new
-                    {
-                        Id = Guid.Parse(parts[0]),
-                        Quantity = parts.Length > 1 ? int.Parse(parts[1]) : 1
-                    });
+            YourTablesBtn.Style = activePageTag == "YourTablesPage" ?
+                (Style)FindResource("NavButtonActive") : (Style)FindResource("NavButtonWithIcon");
 
-                var dishNames = items.Select(item =>
-                {
-                    var dish = AppData.Db.menu.FirstOrDefault(m => m.id == item.Id);
-                    return dish != null
-                        ? $"{dish.title} x{item.Quantity}"
-                        : "Неизвестное блюдо";
-                });
-
-                return string.Join(", ", dishNames);
-            }
-            catch
-            {
-                return "Ошибка формата данных";
-            }
+            OrdersBtn.Style = activePageTag == "OrdersPage" ?
+                (Style)FindResource("NavButtonActive") : (Style)FindResource("NavButtonWithIcon");
         }
 
-        private void ButtonBook(object sender, RoutedEventArgs e)
+        private void NavigateToTables(object sender, RoutedEventArgs e)
         {
-            tables selectedTable = tables.SelectedItem as tables;
-            if (selectedTable == null)
-            {
-                CustomMessageBox.Show("Выберите стол из списка свободных!");
-                return;
-            }
-
-            reserved_tables reserved = new reserved_tables
-            {
-                id = Guid.NewGuid(),
-                user_id = id,
-                table_id = selectedTable.id
-            };
-
-            AppData.Db.reserved_tables.Add(reserved);
-            selectedTable.is_reserved = true;
-            AppData.Db.SaveChanges();
-
-            tables.ItemsSource = AppData.Db.tables.Where(x => x.is_reserved == false).ToList();
-
-            var reservedTableIds = AppData.Db.reserved_tables
-                .Where(x => x.user_id == id)
-                .Select(x => x.table_id)
-                .ToList();
-            your_tables.ItemsSource = AppData.Db.tables
-                .Where(t => reservedTableIds.Contains(t.id))
-                .ToList();
+            MainFrame.Navigate(new TablesPage(id));
+            UpdateNavButtons("TablesPage");
         }
 
-        private void ButtonOrder(object sender, RoutedEventArgs e)
+        private void NavigateToYourTables(object sender, RoutedEventArgs e)
         {
-            tables selectedTable = your_tables.SelectedItem as tables;
-            if (selectedTable == null)
-            {
-                CustomMessageBox.Show("Выберите стол из списка зарезервированных!");
-                return;
-            }
-
-            new OrderWindow(id, selectedTable.id).Show();
-            Close();
+            MainFrame.Navigate(new YourTablesPage(id));
+            UpdateNavButtons("YourTablesPage");
         }
 
-        private void ButtonCancelOrder(object sender, RoutedEventArgs e)
+        private void NavigateToOrders(object sender, RoutedEventArgs e)
         {
-            dynamic selectedItem = orders.SelectedItem;
-            if (selectedItem == null)
-            {
-                CustomMessageBox.Show("Выберите заказ!");
-                return;
-            }
-
-            Guid orderId = selectedItem.id;
-
-            orders selectedOrder = AppData.Db.orders.FirstOrDefault(o => o.id == orderId);
-            if (selectedOrder == null)
-            {
-                CustomMessageBox.Show("Заказ не найден!");
-                return;
-            }
-
-            try
-            {
-                AppData.Db.orders.Remove(selectedOrder);
-                AppData.Db.SaveChanges();
-
-                orders.ItemsSource = AppData.Db.orders
-                    .Where(x => x.user_id == id)
-                    .AsEnumerable()
-                    .Select(o => new
-                    {
-                        o.id,
-                        delishes = GetDishNames(o.menu_ids),
-                        time_end = DateTime.Today.Add(o.time_end).ToString("HH:mm"),
-                        o.full_price,
-                        o.payment_method
-                    })
-                    .ToList();
-
-                CustomMessageBox.Show("Заказ успешно отменен!");
-            }
-            catch (Exception ex)
-            {
-                CustomMessageBox.Show($"Ошибка при отмене заказа: {ex.Message}");
-            }
+            MainFrame.Navigate(new OrdersPage(id));
+            UpdateNavButtons("OrdersPage");
         }
 
-        private void ButtonBack(object sender, RoutedEventArgs e)
+        private void ButtonExit(object sender, RoutedEventArgs e)
         {
             MainWindow main = new MainWindow();
             main.Show();
-            Close();
+            GetWindow(this).Close();
         }
 
         private void MinimizeWindow(object sender, RoutedEventArgs e)

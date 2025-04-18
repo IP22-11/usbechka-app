@@ -1,0 +1,33 @@
+﻿<Page x:Class="usbechka_app.pages.OrdersPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="clr-namespace:usbechka_app.pages"
+      Title="Ваши заказы">
+
+    <Grid>
+        <StackPanel>
+            <TextBlock Text="Ваши заказы" 
+                       FontSize="14"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,5"/>
+
+            <DataGrid x:Name="orders" 
+                      Style="{StaticResource ModernDataGrid}"
+                      ColumnHeaderStyle="{StaticResource ColumnHeaderStyle}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Блюда" Binding="{Binding delishes}" Width="*"/>
+                    <DataGridTextColumn Header="До" Binding="{Binding time_end, StringFormat=HH:mm}" Width="80"/>
+                    <DataGridTextColumn Header="Цена" Binding="{Binding full_price, StringFormat={}{0} руб.}" Width="100"/>
+                    <DataGridTextColumn Header="Оплата" Binding="{Binding payment_method}" Width="100"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Button Content="Отменить заказ" 
+                    Click="ButtonCancelOrder" 
+                    Style="{StaticResource PrimaryButton}"
+                    Margin="0,10,0,0"
+                    HorizontalAlignment="Right"/>
+        </StackPanel>
+
+    </Grid>
+</Page>

@@ -3,17 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:usbechka_app.pages"
         Title="Окно администратора" 
-        Height="450" Width="900"
+        Height="600" Width="900"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent">
-
-    <Window.Resources>
-        <local:BoolToStatusConverter x:Key="BoolToStatusConverter"/>
-    </Window.Resources>
-
     <Border Margin="10" Background="#FF2D2D2D" CornerRadius="10">
         <Border.Effect>
             <DropShadowEffect ShadowDepth="0" BlurRadius="10" Color="Black" Opacity="0.5"/>
@@ -44,81 +39,58 @@
                 </StackPanel>
             </Grid>
 
-            <Grid Margin="10,50,10,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+            <Border x:Name="NavBar" 
+                    Background="#FF363636" 
+                    CornerRadius="5"
+                    VerticalAlignment="Top"
+                    Margin="10,40,10,0"
+                    Height="50"
+                    Padding="10,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="TablesBtn" 
+                            Style="{StaticResource NavButtonWithIcon}"
+                            Click="NavigateToTables"
+                            Tag="TablesPage">
+                        <StackPanel Orientation="Horizontal" Margin="0">
+                            <Path Data="M3,5H21V7H3V5M3,11H21V13H3V11M3,17H21V19H3V17Z" 
+                                  Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                  Stretch="Uniform"
+                                  Width="16" Height="16" Margin="0,0,5,0"/>
+                            <TextBlock Text="Столы" Margin="0"/>
+                        </StackPanel>
+                    </Button>
 
-                <DataGrid x:Name="tables" 
-                          Grid.Column="0"
-                          Margin="0,0,5,0"
-                          Style="{StaticResource AdminDataGrid}"
-                          ColumnHeaderStyle="{StaticResource ColumnHeaderStyle}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Номер стола" Binding="{Binding number_table}" Width="*"/>
-                        <DataGridTextColumn Header="Статус" Width="100">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Text" Value="{Binding is_reserved, Converter={StaticResource BoolToStatusConverter}}"/>
-                                    <Setter Property="HorizontalAlignment" Value="Center"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
+                    <Rectangle Width="1" Margin="10,5" Fill="#FF555555"/>
 
-                <DataGrid x:Name="menu" 
-                          Grid.Column="1"
-                          Margin="5,0,0,0"
-                          Style="{StaticResource AdminDataGrid}"
-                          ColumnHeaderStyle="{StaticResource ColumnHeaderStyle}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Название" Binding="{Binding title}" Width="*"/>
-                        <DataGridTextColumn Header="Описание" Binding="{Binding description}" Width="*"/>
-                        <DataGridTextColumn Header="Цена" Binding="{Binding price, StringFormat={}{0} руб.}" Width="100"/>
-                    </DataGrid.Columns>
-                </DataGrid>
+                    <Button x:Name="MenuBtn" 
+                            Style="{StaticResource NavButtonWithIcon}"
+                            Click="NavigateToMenu"
+                            Tag="MenuPage">
+                        <StackPanel Orientation="Horizontal" Margin="0">
+                            <Path Data="M12,3L2,12H5V20H19V12H22L12,3M12,7.7L16,11.2V18H14V14H10V18H8V11.2L12,7.7Z" 
+                                  Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                  Stretch="Uniform"
+                                  Width="16" Height="16" Margin="0,0,5,0"/>
+                            <TextBlock Text="Меню" Margin="0"/>
+                        </StackPanel>
+                    </Button>
 
-                <StackPanel Grid.Row="1" Grid.Column="0"
-                            Orientation="Horizontal" 
-                            HorizontalAlignment="Center"
-                            Margin="0,10,0,0">
-                    <Button Content="Добавить стол" 
-                            Click="ButtonAddTable" 
-                            Style="{StaticResource AdminButton}"/>
-
-                    <Button Content="Удалить стол" 
-                            Click="ButtonDeleteTable" 
-                            Style="{StaticResource AdminButton}"
-                            Margin="10,0,0,0"/>
+                    <Button x:Name="ExitBtn" 
+                            Style="{StaticResource ExitButton}"
+                            Click="ButtonExit"
+                            Margin="30,0,0,0">
+                        <StackPanel Orientation="Horizontal" Margin="0">
+                            <Path Data="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z" 
+                                  Fill="White"
+                                  Stretch="Uniform"
+                                  Width="16" Height="16" Margin="0,0,5,0"/>
+                            <TextBlock Text="Выход" Margin="0"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
+            </Border>
 
-                <StackPanel Grid.Row="1" Grid.Column="1"
-                            Orientation="Horizontal" 
-                            HorizontalAlignment="Center"
-                            Margin="0,10,0,0">
-                    <Button Content="Добавить блюдо" 
-                            Click="ButtonAddDelishes" 
-                            Style="{StaticResource AdminButton}"/>
-
-                    <Button Content="Удалить блюдо" 
-                            Click="ButtonDeleteDelishes" 
-                            Style="{StaticResource AdminButton}"
-                            Margin="10,0,0,0"/>
-                </StackPanel>
-
-                <Button Content="Назад" 
-                        Grid.Row="1" Grid.ColumnSpan="2"
-                        Click="ButtonBack" 
-                        Style="{StaticResource BackButton}"
-                        HorizontalAlignment="Center"
-                        Margin="0,10,0,0"/>
-            </Grid>
+            <Frame x:Name="MainFrame" Margin="10,100,10,10" NavigationUIVisibility="Hidden"/>
         </Grid>
     </Border>
 </Window>

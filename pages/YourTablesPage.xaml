@@ -1,0 +1,39 @@
+﻿<Page x:Class="usbechka_app.pages.YourTablesPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="clr-namespace:usbechka_app.pages"
+      Title="Ваши столы">
+
+    <Grid>
+        <StackPanel>
+            <TextBlock Text="Ваши столы" 
+                       FontSize="14"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,5"/>
+
+            <DataGrid x:Name="your_tables" 
+                      Style="{StaticResource ModernDataGrid}"
+                      ColumnHeaderStyle="{StaticResource ColumnHeaderStyle}"
+                      Height="150">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Номер" Binding="{Binding number_table}" Width="*"/>
+                    <DataGridTextColumn Header="Статус" Width="100">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding is_reserved, Converter={StaticResource BoolToStatusConverter}}"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Button Content="Заказать" 
+                    Click="ButtonOrder" 
+                    Style="{StaticResource PrimaryButton}"
+                    Margin="0,10,0,0"
+                    HorizontalAlignment="Right"/>
+        </StackPanel>
+
+    </Grid>
+</Page>
