@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 
 namespace usbechka_app.pages
 {
@@ -46,6 +47,14 @@ namespace usbechka_app.pages
         private void CloseWindow(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void TopPanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
         }
     }
 }

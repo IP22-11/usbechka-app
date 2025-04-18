@@ -56,11 +56,9 @@ namespace usbechka_app.pages
             Close();
         }
 
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        private void TopPanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            base.OnMouseLeftButtonDown(e);
-
-            if (e.GetPosition(this).Y <= 30)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
                 DragMove();
             }

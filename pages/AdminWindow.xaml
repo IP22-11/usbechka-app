@@ -15,7 +15,7 @@
         </Border.Effect>
 
         <Grid>
-            <Grid Height="30" VerticalAlignment="Top">
+            <Grid Height="30" VerticalAlignment="Top" MouseLeftButtonDown="TopPanel_MouseLeftButtonDown">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
