@@ -20,17 +20,48 @@ namespace usbechka_app.pages
             InitializeComponent();
             _userId = userId;
             _tableId = tableId;
+
+            _menuItems = AppData.Db.menu.ToList();
+
+            PriceFilterComboBox.SelectedIndex = 0;
+            PaymentMethodComboBox.SelectedIndex = 1;
+
             LoadMenuItems();
             UpdateTotalPrice();
         }
 
-        private void LoadMenuItems()
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            _menuItems = AppData.Db.menu.ToList();
+            var searchText = SearchTextBox.Text;
+            LoadMenuItems(searchText);
+        }
 
+        private void PriceFilterComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedPriceFilter = (PriceFilterComboBox.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "Все цены";
+            var searchText = SearchTextBox.Text;
+            LoadMenuItems(searchText, selectedPriceFilter);
+        }
+
+        private void LoadMenuItems(string searchText = "", string priceFilter = "Все цены")
+        {
+            // Фильтрация элементов меню
+            var filteredItems = _menuItems
+                .Where(item =>
+                    (string.IsNullOrEmpty(searchText) ||
+                     item.title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                     item.description.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0) &&
+                    (priceFilter == "Все цены" ||
+                     (priceFilter == "До 100" && item.price <= 100) ||
+                     (priceFilter == "От 100 до 500" && item.price > 100 && item.price <= 500) ||
+                     (priceFilter == "Больше 500" && item.price > 500)))
+                .ToList();
+
+            // Очистка текущего списка
             MenuStackPanel.Children.Clear();
 
-            foreach (var item in _menuItems)
+            // Добавление отфильтрованных элементов
+            foreach (var item in filteredItems)
             {
                 var border = new Border
                 {
@@ -130,7 +161,6 @@ namespace usbechka_app.pages
                 grid.Children.Add(quantityPanel);
 
                 border.Child = grid;
-
                 MenuStackPanel.Children.Add(border);
             }
         }

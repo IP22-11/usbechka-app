@@ -42,27 +42,68 @@
 
             <Grid Margin="10,50,10,10">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Панель фильтров -->
                     <RowDefinition Height="*"/>
+                    <!-- Список меню -->
                     <RowDefinition Height="Auto"/>
+                    <!-- Способ оплаты -->
                     <RowDefinition Height="Auto"/>
+                    <!-- Итоговая цена -->
                     <RowDefinition Height="Auto"/>
+                    <!-- Кнопки -->
                 </Grid.RowDefinitions>
 
-                <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+                <!-- Панель фильтров -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                    <!-- Поле поиска -->
+                    <StackPanel Orientation="Vertical" Margin="0,0,10,0">
+                        <TextBlock Text="Поиск по названию и описанию" 
+                   FontSize="12"
+                   Foreground="#FFA0A0A0"
+                   Margin="0,0,0,5"/>
+                        <TextBox x:Name="SearchTextBox"
+                 Width="200"
+                 FontSize="14"
+                 Style="{StaticResource InputFieldStyle}"
+                 TextChanged="SearchTextBox_TextChanged"/>
+                    </StackPanel>
+
+                    <!-- Фильтр по цене -->
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Фильтр по цене" 
+                   FontSize="12"
+                   Foreground="#FFA0A0A0"
+                   Margin="0,0,0,5"/>
+                        <ComboBox x:Name="PriceFilterComboBox"
+                  Width="200"
+                  Style="{StaticResource CustomComboBoxStyle}"
+                  ItemContainerStyle="{StaticResource CustomComboBoxItemStyle}"
+                  SelectionChanged="PriceFilterComboBox_SelectionChanged">
+                            <ComboBoxItem Content="Все цены"/>
+                            <ComboBoxItem Content="До 100"/>
+                            <ComboBoxItem Content="От 100 до 500"/>
+                            <ComboBoxItem Content="Больше 500"/>
+                        </ComboBox>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Остальной интерфейс -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                     <StackPanel x:Name="MenuStackPanel" Margin="0,0,5,0"/>
                 </ScrollViewer>
 
-                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,10,0">
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,10,0">
                     <TextBlock Text="Выберите способ оплаты: "
-                               FontSize="14"
-                               Foreground="White"
-                               VerticalAlignment="Center"/>
+                   FontSize="14"
+                   Foreground="White"
+                   VerticalAlignment="Center"/>
 
                     <ComboBox x:Name="PaymentMethodComboBox" 
-                          Width="150"
-                          Style="{StaticResource CustomComboBoxStyle}"
-                          ItemContainerStyle="{StaticResource CustomComboBoxItemStyle}"
-                          SelectionChanged="PaymentMethodComboBox_SelectionChanged">
+                  Width="150"
+                  Style="{StaticResource CustomComboBoxStyle}"
+                  ItemContainerStyle="{StaticResource CustomComboBoxItemStyle}"
+                  SelectionChanged="PaymentMethodComboBox_SelectionChanged">
                         <ComboBoxItem Content="Наличные"/>
                         <ComboBoxItem Content="Карта"/>
                         <ComboBoxItem Content="Безналичный расчет"/>
@@ -70,22 +111,22 @@
                     </ComboBox>
                 </StackPanel>
 
-                <TextBlock x:Name="TotalPriceTextBlock" Grid.Row="2"
-                           Text="Итого: 0 руб." 
-                           FontSize="16"
-                           FontWeight="Bold"
-                           Foreground="White"
-                           HorizontalAlignment="Right"
-                           Margin="0,10,10,10"/>
+                <TextBlock x:Name="TotalPriceTextBlock" Grid.Row="3"
+               Text="Итого: 0 руб." 
+               FontSize="16"
+               FontWeight="Bold"
+               Foreground="White"
+               HorizontalAlignment="Right"
+               Margin="0,10,10,10"/>
 
-                <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Content="Отмена" 
-                            Click="CancelButton_Click"
-                            Style="{StaticResource CancelButton}"
-                            Margin="0,0,10,0"/>
+                Click="CancelButton_Click"
+                Style="{StaticResource CancelButton}"
+                Margin="0,0,10,0"/>
                     <Button Content="Подтвердить" 
-                            Click="ConfirmButton_Click"
-                            Style="{StaticResource DialogButton}"/>
+                Click="ConfirmButton_Click"
+                Style="{StaticResource DialogButton}"/>
                 </StackPanel>
             </Grid>
         </Grid>
