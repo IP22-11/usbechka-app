@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace usbechka_app.pages
@@ -97,21 +98,110 @@ namespace usbechka_app.pages
             new ClientWindow(user.id).Show();
             Close();
         }
-        private bool ValidatePhone(string phoneNumber)
+
+        private void Phone_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if (phoneNumber.Length != 12)
-                return false;
+            var textBox = sender as TextBox;
+            e.Handled = !e.Text.All(char.IsDigit);
+        }
 
-            if (phoneNumber[0] != '+')
-                return false;
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+            DataObject.AddPastingHandler(phone, Phone_Pasting);
+        }
 
-            for (int i = 1; i < phoneNumber.Length; i++)
+        private void Phone_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            if (phone.SelectionStart < 2)
             {
-                if (!char.IsDigit(phoneNumber[i]))
-                    return false;
+                e.CancelCommand();
+            }
+        }
+
+        private void Phone_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            var textBox = sender as TextBox;
+
+            if (e.Key == Key.Back)
+            {
+                if (textBox.SelectionStart <= 2 && textBox.SelectionLength == 0)
+                {
+                    e.Handled = true;
+                }
+                else if (textBox.SelectionStart <= 2 && textBox.SelectionLength > 0)
+                {
+                    if (textBox.SelectionStart + textBox.SelectionLength > 2)
+                    {
+                        textBox.SelectionStart = 2;
+                        textBox.SelectionLength = textBox.Text.Length - 2;
+                    }
+                    e.Handled = true;
+                }
+            }
+            else if (e.Key == Key.V && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                if (textBox.SelectionStart < 2)
+                {
+                    e.Handled = true;
+                }
+            }
+        }
+
+
+        private void Phone_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (string.IsNullOrEmpty(textBox.Text) || !textBox.Text.StartsWith("+7"))
+            {
+                textBox.Text = "+7";
+                textBox.SelectionStart = textBox.Text.Length;
+                return;
             }
 
-            return true;
+            int cursorPos = textBox.SelectionStart;
+
+            string digits = new string(textBox.Text.Where(char.IsDigit).ToArray());
+            if (digits.Length < 2) return;
+
+            string formatted = "+7";
+            if (digits.Length > 1)
+            {
+                formatted += $" ({digits.Substring(1, Math.Min(3, digits.Length - 1))}";
+            }
+            if (digits.Length > 4)
+            {
+                formatted += $") {digits.Substring(4, Math.Min(3, digits.Length - 4))}";
+            }
+            if (digits.Length > 7)
+            {
+                formatted += $" {digits.Substring(7, Math.Min(2, digits.Length - 7))}";
+            }
+            if (digits.Length > 9)
+            {
+                formatted += $"-{digits.Substring(9, Math.Min(2, digits.Length - 9))}";
+            }
+
+            if (textBox.Text != formatted)
+            {
+                int diff = formatted.Length - textBox.Text.Length;
+                cursorPos += diff;
+
+                textBox.Text = formatted;
+
+                cursorPos = Math.Max(4, Math.Min(cursorPos, formatted.Length));
+
+                textBox.SelectionStart = cursorPos;
+            }
+        }
+
+        private bool ValidatePhone(string phoneNumber)
+        {
+            string digits = phoneNumber.Length > 0 && phoneNumber[0] == '+'
+                ? "+" + new string(phoneNumber.Where(char.IsDigit).ToArray())
+                : new string(phoneNumber.Where(char.IsDigit).ToArray());
+
+            return digits.Length == 12 && digits.StartsWith("+7");
         }
 
         public static bool Validate(string value)

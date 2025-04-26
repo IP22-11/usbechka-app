@@ -47,7 +47,10 @@
                     <TextBlock Text="Телефон" Foreground="#FFA0A0A0" Margin="5,20,0,5" FontSize="12"/>
                     <TextBox x:Name="phone" 
                          Text="+7" 
-                         MaxLength="12"
+                         MaxLength="18"
+                         PreviewTextInput="Phone_PreviewTextInput"
+                         PreviewKeyDown="Phone_PreviewKeyDown"
+                         TextChanged="Phone_TextChanged"
                          Style="{StaticResource InputFieldStyle}"/>
 
                     <TextBlock Text="Пароль" Foreground="#FFA0A0A0" Margin="5,0,0,5" FontSize="12"/>
